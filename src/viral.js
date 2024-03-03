@@ -36,8 +36,6 @@ async function setViralLoops() {
     }
   }
 
-  // console.log(campaign);
-
   for (let i = 0; i < localStorage.length; i++) {
     let key = localStorage.key(i);
     if (key.includes('vl_refCode_')) {
