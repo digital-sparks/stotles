@@ -2,7 +2,7 @@ window.addEventListener('vlReady', setViralLoops);
 
 document.querySelector('#email-form').addEventListener('submit', () => {
   var targetNode = document.querySelector('div[data-vl-container="sharing-stage"]');
-
+  console.log('form submitted');
   var observerOptions = {
     attributes: true,
     attributeFilter: ['style'],
@@ -13,6 +13,7 @@ document.querySelector('#email-form').addEventListener('submit', () => {
       var displayStyle = window.getComputedStyle(targetNode).display;
 
       if (displayStyle === 'block') {
+        console.log('form state changed');
         setViralLoops();
       }
     });
@@ -28,7 +29,7 @@ async function setViralLoops() {
     try {
       campaign = await ViralLoops.getCampaign();
       if (!campaign) {
-        // console.log('Waiting for campaign...');
+        console.log('Waiting for campaign...');
         await new Promise((resolve) => setTimeout(resolve, 200)); // waits for 100ms before next attempt
       }
     } catch (error) {
@@ -36,10 +37,12 @@ async function setViralLoops() {
     }
   }
 
+  console.log(campaign);
+
   for (let i = 0; i < localStorage.length; i++) {
     let key = localStorage.key(i);
     if (key.includes('vl_refCode_')) {
-      const url = 'https://www.stotles.com/operating-system-waitlist';
+      const url = 'https://www.stotles.com/bid-module-waitlist';
 
       const referralCode = campaign.userData
         ? campaign.userData.referralCode
