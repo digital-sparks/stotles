@@ -21,7 +21,7 @@ window.Webflow.push(() => {
           form.querySelector('input[name=referrer]').value = stotles_cookie.referrer
             ? stotles_cookie.referrer
             : 'Unknown';
-          form.querySelector('input[name=first_stotles_page]').val = firstPage;
+          form.querySelector('input[name=first_stotles_page]').value = firstPage;
           form.querySelector('input[name=utm_params]').value = stotles_cookie.utmParams
             ? Object.entries(stotles_cookie.utmParams)
                 .map(([k, v]) => `${k}: ${v}`)
