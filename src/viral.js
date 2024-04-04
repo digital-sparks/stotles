@@ -50,17 +50,17 @@ async function setViralLoops() {
 
       const rank = await campaign.getRank({ referralCode: referralCode });
 
-      document.querySelectorAll('[data-name=rank').forEach((el) => {
+      document.querySelectorAll('[data-name=rank]').forEach((el) => {
         el.textContent = `#${rank.rank}`;
       });
 
       // url share link
-      document.querySelector('[data-name=url').textContent =
+      document.querySelector('[data-name=url]').textContent =
         `${url}?referralCode=${referralCode}&refSource=copy`;
 
       // facebook share link
       document
-        .querySelector('[data-name=facebook')
+        .querySelector('[data-name=facebook]')
         .setAttribute(
           'href',
           `https://www.facebook.com/share_channel/?link=${encodeURIComponent(
@@ -70,7 +70,7 @@ async function setViralLoops() {
 
       // whatsapp share link
       document
-        .querySelector('[data-name=whatsapp')
+        .querySelector('[data-name=whatsapp]')
         .setAttribute(
           'href',
           `https://api.whatsapp.com/send?text=${encodeURIComponent(
@@ -84,7 +84,7 @@ async function setViralLoops() {
 
       // twitter share link
       document
-        .querySelector('[data-name=twitter')
+        .querySelector('[data-name=twitter]')
         .setAttribute(
           'href',
           `https://twitter.com/intent/post?url=${encodeURIComponent(
@@ -96,7 +96,7 @@ async function setViralLoops() {
 
       // linkedin share link
       document
-        .querySelector('[data-name=linkedin')
+        .querySelector('[data-name=linkedin]')
         .setAttribute(
           'href',
           `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
@@ -106,7 +106,7 @@ async function setViralLoops() {
 
       // mail share link
       document
-        .querySelector('[data-name=email')
+        .querySelector('[data-name=email]')
         .setAttribute(
           'href',
           `mailto:?subject=${encodeURIComponent(

@@ -18,28 +18,28 @@ window.Webflow.push(() => {
         const stotles_cookie = raw_cookie ? JSON.parse(raw_cookie) : undefined;
         if (stotles_cookie) {
           const firstPage = stotles_cookie.url ? `<${stotles_cookie.url}|Link>` : 'Unknown';
-          form.querySelector('input[name=referrer]').val = stotles_cookie.referrer
+          form.querySelector('input[name=referrer]').value = stotles_cookie.referrer
             ? stotles_cookie.referrer
             : 'Unknown';
           form.querySelector('input[name=first_stotles_page]').val = firstPage;
-          form.querySelector('input[name=utm_params]').val = stotles_cookie.utmParams
+          form.querySelector('input[name=utm_params]').value = stotles_cookie.utmParams
             ? Object.entries(stotles_cookie.utmParams)
                 .map(([k, v]) => `${k}: ${v}`)
                 .join(', ')
             : 'Unknown';
-          form.querySelector('input[name=utm_source]').val = stotles_cookie.utmParams
+          form.querySelector('input[name=utm_source]').value = stotles_cookie.utmParams
             ? stotles_cookie.utmParams['source']
             : undefined;
-          form.querySelector('input[name=utm_medium]').val = stotles_cookie.utmParams
+          form.querySelector('input[name=utm_medium]').value = stotles_cookie.utmParams
             ? stotles_cookie.utmParams['medium']
             : undefined;
-          form.querySelector('input[name=utm_campaign]').val = stotles_cookie.utmParams
+          form.querySelector('input[name=utm_campaign]').value = stotles_cookie.utmParams
             ? stotles_cookie.utmParams['campaign']
             : undefined;
-          form.querySelector('input[name=utm_content]').val = stotles_cookie.utmParams
+          form.querySelector('input[name=utm_content]').value = stotles_cookie.utmParams
             ? stotles_cookie.utmParams['content']
             : undefined;
-          form.querySelector('input[name=utm_term]').val = stotles_cookie.utmParams
+          form.querySelector('input[name=utm_term]').value = stotles_cookie.utmParams
             ? stotles_cookie.utmParams['term']
             : 'undefined';
         }
