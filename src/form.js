@@ -1,5 +1,53 @@
 window.Webflow ||= [];
 window.Webflow.push(() => {
+  const leadIdKey = 'lead_id';
+  // Check if lead_id exists in localStorage
+  let leadId = localStorage.getItem(leadIdKey);
+
+  if (!leadId) {
+    // Generate a new GUID
+    leadId = generateGUID();
+    // Save the lead_id to localStorage
+    localStorage.setItem(leadIdKey, leadId);
+  }
+
+  // Function to generate a GUID
+  function generateGUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      const r = (Math.random() * 16) | 0,
+        v = c === 'x' ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
+  }
+
+  window.dataLayer = window.dataLayer || [];
+
+  function getUrlWithoutQueryParams() {
+    const url = new URL(window.location.href);
+    return `${url.origin}${url.pathname}${url.hash}`;
+  }
+
+  // Function to send form start event
+  function sendFormStartEvent(formEvent, formName, formId) {
+    window.dataLayer.push({
+      event: `${formEvent}_start`,
+      form_name: formName,
+      form_id: formId,
+      form_url: getUrlWithoutQueryParams(),
+    });
+  }
+
+  // Function to send input interaction event
+  function sendInputInteractionEvent(formEvent, formName, formId, inputName) {
+    window.dataLayer.push({
+      event: `${formEvent}_interaction`,
+      form_name: formName,
+      form_id: formId,
+      form_url: getUrlWithoutQueryParams(),
+      field_name: inputName,
+    });
+  }
+
   $.validator.addMethod('regex', function (value, element, regexp) {
     if (regexp && regexp.constructor != RegExp) {
       regexp = new RegExp(regexp);
@@ -12,6 +60,34 @@ window.Webflow.push(() => {
   });
 
   document.querySelectorAll('form').forEach((form, i) => {
+    const formId = form.getAttribute('id'),
+      formName = form.getAttribute('data-name'),
+      formEvent = form.getAttribute('data-track-name');
+
+    // Track form start interaction
+    let formStarted = false;
+    form.addEventListener(
+      'input',
+      () => {
+        if (!formStarted) {
+          formStarted = true;
+          sendFormStartEvent(formEvent, formName, formId);
+        }
+      },
+      { once: true }
+    );
+
+    // Track input interactions
+    form.querySelectorAll('input, select, textarea').forEach((input) => {
+      input.addEventListener(
+        'input',
+        () => {
+          sendInputInteractionEvent(formEvent, formName, formId, input.name);
+        },
+        { once: true }
+      );
+    });
+
     $(form).validate({
       submitHandler: function (form) {
         const raw_cookie = Cookies.get('stotles_utm');
@@ -43,6 +119,15 @@ window.Webflow.push(() => {
             ? stotles_cookie.utmParams['term']
             : 'undefined';
         }
+
+        // form is submitted successfully
+        window.dataLayer.push({
+          event: `${formEvent}_submitted`,
+          form_name: formName,
+          form_id: formId,
+          form_url: getUrlWithoutQueryParams(),
+          lead_id: leadId,
+        });
 
         return true;
       },
