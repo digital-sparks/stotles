@@ -1,5 +1,53 @@
 window.Webflow ||= [];
 window.Webflow.push(() => {
+  const leadIdKey = 'lead_id';
+  // Check if lead_id exists in localStorage
+  let leadId = localStorage.getItem(leadIdKey);
+
+  if (!leadId) {
+    // Generate a new GUID
+    leadId = generateGUID();
+    // Save the lead_id to localStorage
+    localStorage.setItem(leadIdKey, leadId);
+  }
+
+  // Function to generate a GUID
+  function generateGUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      const r = (Math.random() * 16) | 0,
+        v = c === 'x' ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
+  }
+
+  window.dataLayer = window.dataLayer || [];
+
+  function getUrlWithoutQueryParams() {
+    const url = new URL(window.location.href);
+    return `${url.origin}${url.pathname}${url.hash}`;
+  }
+
+  // Function to send form start event
+  function sendFormStartEvent(formEvent, formName, formId) {
+    window.dataLayer.push({
+      event: `${formEvent}_start`,
+      form_name: formName,
+      form_id: formId,
+      form_url: getUrlWithoutQueryParams(),
+    });
+  }
+
+  // Function to send input interaction event
+  function sendInputInteractionEvent(formEvent, formName, formId, inputName) {
+    window.dataLayer.push({
+      event: `${formEvent}_interaction`,
+      form_name: formName,
+      form_id: formId,
+      form_url: getUrlWithoutQueryParams(),
+      field_name: inputName,
+    });
+  }
+
   /*-------------------------------------------------------*/
   /* VIDEO POPUP                                           */
   /*-------------------------------------------------------*/
@@ -203,6 +251,33 @@ window.Webflow.push(() => {
   const gatedFormSection = gatedForm.closest('.sign-up_component');
   const pagePath = new URL(document.URL).pathname + '-popup';
 
+  const formId = gatedForm.getAttribute('id'),
+    formName = gatedForm.getAttribute('data-name'),
+    formEvent = gatedForm.getAttribute('data-track-name');
+
+  let formStarted = false;
+  gatedForm.addEventListener(
+    'input',
+    () => {
+      if (!formStarted) {
+        formStarted = true;
+        sendFormStartEvent(formEvent, formName, formId);
+      }
+    },
+    { once: true }
+  );
+
+  // Track input interactions
+  gatedForm.querySelectorAll('input, select, textarea').forEach((input) => {
+    input.addEventListener(
+      'input',
+      () => {
+        sendInputInteractionEvent(formEvent, formName, formId, input.name);
+      },
+      { once: true }
+    );
+  });
+
   if (window.localStorage.getItem(pagePath) === 'true' || getUrlParameter('popup') === 'false') {
     gatedFormSection.style.display = 'none';
   } else {
@@ -254,10 +329,21 @@ window.Webflow.push(() => {
         gatedFormSection.style.display = 'none';
         window.localStorage.setItem(pagePath, 'true');
         document.querySelector('.rich-text-wrap').style.maxHeight = 'none';
+
         window.lintrk('track', { conversion_id: 15511809 });
+
         window.dataLayer.push({
           event: 'download_report',
           report_event_label: data.campaign_description,
+        });
+
+        // form is submitted successfully
+        window.dataLayer.push({
+          event: `${formEvent}_submitted`,
+          form_name: formName,
+          form_id: formId,
+          form_url: getUrlWithoutQueryParams(),
+          lead_id: leadId,
         });
       }
     };
