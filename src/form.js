@@ -129,6 +129,13 @@ window.Webflow.push(() => {
           lead_id: leadId,
         });
 
+        // Hide popup form is present
+        if (document.querySelector('#report-popup-form')) {
+          document.querySelector('#report-popup-form').style.display = 'none';
+          const pagePath = new URL(document.URL).pathname + '-popup';
+          window.localStorage.setItem(pagePath, 'true');
+        }
+
         return true;
       },
       errorClass: 'is-error',
@@ -186,7 +193,7 @@ window.Webflow.push(() => {
         industry: 'Industry is required',
         privacy: 'Please agree to our privacy policy',
         // problem: '',
-        // public_sector_experience: '',
+        public_sector_experience: 'Please select your experience',
         // contracts: '',
         // buyer_qai_pass: ''
       },
