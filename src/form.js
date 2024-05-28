@@ -131,6 +131,7 @@ window.Webflow.push(() => {
 
         // Hide popup form if present
         if (document.querySelector('#report-popup-form')) {
+          form.querySelector('input[name=campaign_description]').value = document.title;
           document.querySelector('#report-popup-form').style.display = 'none';
           const pagePath = new URL(document.URL).pathname + '-popup';
           window.localStorage.setItem(pagePath, 'true');
@@ -138,6 +139,7 @@ window.Webflow.push(() => {
 
         // hide report page overlay
         if (document.querySelector('#gated-form')) {
+          form.querySelector('input[name=campaign_description]').value = document.title;
           const gatedForm = document.querySelector('#gated-form');
           const gatedFormSection = gatedForm.closest('.sign-up_component');
           gatedFormSection.style.display = 'none';
