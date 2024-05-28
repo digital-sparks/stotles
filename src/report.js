@@ -1,52 +1,52 @@
 window.Webflow ||= [];
 window.Webflow.push(() => {
-  const leadIdKey = 'lead_id';
-  // Check if lead_id exists in localStorage
-  let leadId = localStorage.getItem(leadIdKey);
+  // const leadIdKey = 'lead_id';
+  // // Check if lead_id exists in localStorage
+  // let leadId = localStorage.getItem(leadIdKey);
 
-  if (!leadId) {
-    // Generate a new GUID
-    leadId = generateGUID();
-    // Save the lead_id to localStorage
-    localStorage.setItem(leadIdKey, leadId);
-  }
+  // if (!leadId) {
+  //   // Generate a new GUID
+  //   leadId = generateGUID();
+  //   // Save the lead_id to localStorage
+  //   localStorage.setItem(leadIdKey, leadId);
+  // }
 
-  // Function to generate a GUID
-  function generateGUID() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-      const r = (Math.random() * 16) | 0,
-        v = c === 'x' ? r : (r & 0x3) | 0x8;
-      return v.toString(16);
-    });
-  }
+  // // Function to generate a GUID
+  // function generateGUID() {
+  //   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+  //     const r = (Math.random() * 16) | 0,
+  //       v = c === 'x' ? r : (r & 0x3) | 0x8;
+  //     return v.toString(16);
+  //   });
+  // }
 
-  window.dataLayer = window.dataLayer || [];
+  // window.dataLayer = window.dataLayer || [];
 
-  function getUrlWithoutQueryParams() {
-    const url = new URL(window.location.href);
-    return `${url.origin}${url.pathname}${url.hash}`;
-  }
+  // function getUrlWithoutQueryParams() {
+  //   const url = new URL(window.location.href);
+  //   return `${url.origin}${url.pathname}${url.hash}`;
+  // }
 
-  // Function to send form start event
-  function sendFormStartEvent(formEvent, formName, formId) {
-    window.dataLayer.push({
-      event: `${formEvent}_start`,
-      form_name: formName,
-      form_id: formId,
-      form_url: getUrlWithoutQueryParams(),
-    });
-  }
+  // // Function to send form start event
+  // function sendFormStartEvent(formEvent, formName, formId) {
+  //   window.dataLayer.push({
+  //     event: `${formEvent}_start`,
+  //     form_name: formName,
+  //     form_id: formId,
+  //     form_url: getUrlWithoutQueryParams(),
+  //   });
+  // }
 
-  // Function to send input interaction event
-  function sendInputInteractionEvent(formEvent, formName, formId, inputName) {
-    window.dataLayer.push({
-      event: `${formEvent}_interaction`,
-      form_name: formName,
-      form_id: formId,
-      form_url: getUrlWithoutQueryParams(),
-      field_name: inputName,
-    });
-  }
+  // // Function to send input interaction event
+  // function sendInputInteractionEvent(formEvent, formName, formId, inputName) {
+  //   window.dataLayer.push({
+  //     event: `${formEvent}_interaction`,
+  //     form_name: formName,
+  //     form_id: formId,
+  //     form_url: getUrlWithoutQueryParams(),
+  //     field_name: inputName,
+  //   });
+  // }
 
   /*-------------------------------------------------------*/
   /* VIDEO POPUP                                           */
@@ -255,28 +255,28 @@ window.Webflow.push(() => {
     formName = gatedForm.getAttribute('data-name'),
     formEvent = gatedForm.getAttribute('data-track-name');
 
-  let formStarted = false;
-  gatedForm.addEventListener(
-    'input',
-    () => {
-      if (!formStarted) {
-        formStarted = true;
-        sendFormStartEvent(formEvent, formName, formId);
-      }
-    },
-    { once: true }
-  );
+  // let formStarted = false;
+  // gatedForm.addEventListener(
+  //   'input',
+  //   () => {
+  //     if (!formStarted) {
+  //       formStarted = true;
+  //       sendFormStartEvent(formEvent, formName, formId);
+  //     }
+  //   },
+  //   { once: true }
+  // );
 
-  // Track input interactions
-  gatedForm.querySelectorAll('input, select, textarea').forEach((input) => {
-    input.addEventListener(
-      'input',
-      () => {
-        sendInputInteractionEvent(formEvent, formName, formId, input.name);
-      },
-      { once: true }
-    );
-  });
+  // // Track input interactions
+  // gatedForm.querySelectorAll('input, select, textarea').forEach((input) => {
+  //   input.addEventListener(
+  //     'input',
+  //     () => {
+  //       sendInputInteractionEvent(formEvent, formName, formId, input.name);
+  //     },
+  //     { once: true }
+  //   );
+  // });
 
   if (window.localStorage.getItem(pagePath) === 'true' || getUrlParameter('popup') === 'false') {
     gatedFormSection.style.display = 'none';
@@ -287,71 +287,71 @@ window.Webflow.push(() => {
   // SHOW / HIDE GATED FORM
 
   // ON GATED FORM SUBMIT
-  gatedForm.addEventListener('submit', function (e) {
-    e.preventDefault();
+  // gatedForm.addEventListener('submit', function (e) {
+  //   e.preventDefault();
 
-    const form = this,
-      action = form.getAttribute('action');
+  //   const form = this,
+  //     action = form.getAttribute('action');
 
-    let data = {},
-      formData = new FormData(form);
-    formData.forEach(function (value, key) {
-      data[key] = value;
-    });
+  //   let data = {},
+  //     formData = new FormData(form);
+  //   formData.forEach(function (value, key) {
+  //     data[key] = value;
+  //   });
 
-    data.campaign_description = document.title;
-    const raw_cookie = Cookies.get('stotles_utm');
-    const stotles_cookie = raw_cookie ? JSON.parse(raw_cookie) : undefined;
-    if (stotles_cookie) {
-      const firstPage = stotles_cookie.url ? `<${stotles_cookie.url}|Link>` : 'Unknown';
-      data.referrer = stotles_cookie.referrer ? stotles_cookie.referrer : 'Unknown';
-      data.first_stotles_page = firstPage;
-      data.utm_params = stotles_cookie.utmParams
-        ? Object.entries(stotles_cookie.utmParams)
-            .map(([k, v]) => `${k}: ${v}`)
-            .join(', ')
-        : 'Unknown';
-      data.utm_source = stotles_cookie.utmParams ? stotles_cookie.utmParams['source'] : undefined;
-      data.utm_medium = stotles_cookie.utmParams ? stotles_cookie.utmParams['medium'] : undefined;
-      data.utm_campaign = stotles_cookie.utmParams
-        ? stotles_cookie.utmParams['campaign']
-        : undefined;
-      data.utm_content = stotles_cookie.utmParams ? stotles_cookie.utmParams['content'] : undefined;
-      data.utm_term = stotles_cookie.utmParams ? stotles_cookie.utmParams['term'] : undefined;
-    }
+  //   data.campaign_description = document.title;
+  //   const raw_cookie = Cookies.get('stotles_utm');
+  //   const stotles_cookie = raw_cookie ? JSON.parse(raw_cookie) : undefined;
+  //   if (stotles_cookie) {
+  //     const firstPage = stotles_cookie.url ? `<${stotles_cookie.url}|Link>` : 'Unknown';
+  //     data.referrer = stotles_cookie.referrer ? stotles_cookie.referrer : 'Unknown';
+  //     data.first_stotles_page = firstPage;
+  //     data.utm_params = stotles_cookie.utmParams
+  //       ? Object.entries(stotles_cookie.utmParams)
+  //           .map(([k, v]) => `${k}: ${v}`)
+  //           .join(', ')
+  //       : 'Unknown';
+  //     data.utm_source = stotles_cookie.utmParams ? stotles_cookie.utmParams['source'] : undefined;
+  //     data.utm_medium = stotles_cookie.utmParams ? stotles_cookie.utmParams['medium'] : undefined;
+  //     data.utm_campaign = stotles_cookie.utmParams
+  //       ? stotles_cookie.utmParams['campaign']
+  //       : undefined;
+  //     data.utm_content = stotles_cookie.utmParams ? stotles_cookie.utmParams['content'] : undefined;
+  //     data.utm_term = stotles_cookie.utmParams ? stotles_cookie.utmParams['term'] : undefined;
+  //   }
 
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', action, true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.setRequestHeader('Accept', 'application/json');
-    xhr.onload = function () {
-      if (xhr.status === 200) {
-        gatedFormSection.style.display = 'none';
-        window.localStorage.setItem(pagePath, 'true');
-        document.querySelector('.rich-text-wrap').style.maxHeight = 'none';
+  //   var xhr = new XMLHttpRequest();
+  //   xhr.open('POST', action, true);
+  //   xhr.setRequestHeader('Content-Type', 'application/json');
+  //   xhr.setRequestHeader('Accept', 'application/json');
+  //   xhr.onload = function () {
+  //     if (xhr.status === 200) {
+  //       gatedFormSection.style.display = 'none';
+  //       window.localStorage.setItem(pagePath, 'true');
+  //       document.querySelector('.rich-text-wrap').style.maxHeight = 'none';
 
-        window.lintrk('track', { conversion_id: 15511809 });
+  //       window.lintrk('track', { conversion_id: 15511809 });
 
-        window.dataLayer.push({
-          event: 'download_report',
-          report_event_label: data.campaign_description,
-        });
+  //       window.dataLayer.push({
+  //         event: 'download_report',
+  //         report_event_label: data.campaign_description,
+  //       });
 
-        // form is submitted successfully
-        window.dataLayer.push({
-          event: `${formEvent}_submitted`,
-          form_name: formName,
-          form_id: formId,
-          form_url: getUrlWithoutQueryParams(),
-          lead_id: leadId,
-        });
-      }
-    };
-    xhr.onerror = function () {
-      console.log('Error:', xhr.statusText);
-    };
-    xhr.send(JSON.stringify(data));
-  });
+  //       // form is submitted successfully
+  //       window.dataLayer.push({
+  //         event: `${formEvent}_submitted`,
+  //         form_name: formName,
+  //         form_id: formId,
+  //         form_url: getUrlWithoutQueryParams(),
+  //         lead_id: leadId,
+  //       });
+  //     }
+  //   };
+  //   xhr.onerror = function () {
+  //     console.log('Error:', xhr.statusText);
+  //   };
+  //   xhr.send(JSON.stringify(data));
+  // });
   // ON GATED FORM SUBMIT
 
   // PLACE GATED FORM

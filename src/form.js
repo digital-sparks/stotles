@@ -129,11 +129,32 @@ window.Webflow.push(() => {
           lead_id: leadId,
         });
 
-        // Hide popup form is present
+        // Hide popup form if present
         if (document.querySelector('#report-popup-form')) {
           document.querySelector('#report-popup-form').style.display = 'none';
           const pagePath = new URL(document.URL).pathname + '-popup';
           window.localStorage.setItem(pagePath, 'true');
+        }
+
+        // hide report page overlay
+        if (document.querySelector('#gated-form')) {
+          const gatedForm = document.querySelector('#gated-form');
+          const gatedFormSection = gatedForm.closest('.sign-up_component');
+          gatedFormSection.style.display = 'none';
+          const pagePath = new URL(document.URL).pathname + '-popup';
+          window.localStorage.setItem(pagePath, 'true');
+          document.querySelector('.rich-text-wrap').style.maxHeight = 'none';
+        }
+
+        // Open PDF if present
+        if (window.downloadUrl) {
+          let link = document.createElement('a');
+          link.href = window.downloadUrl;
+          link.download = window.downloadName;
+          link.target = '_blank';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
         }
 
         return true;
