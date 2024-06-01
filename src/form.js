@@ -78,13 +78,23 @@ window.Webflow.push(() => {
     );
 
     // Track input interactions
-    form.querySelectorAll('input, select, textarea').forEach((input) => {
+    form.querySelectorAll('input, textarea').forEach((input) => {
       input.addEventListener(
         'input',
         () => {
           sendInputInteractionEvent(formEvent, formName, formId, input.name);
         },
         { once: true }
+      );
+    });
+
+    form.querySelectorAll('select').forEach((input) => {
+      input.addEventListener(
+        'input',
+        () => {
+          sendInputInteractionEvent(formEvent, formName, formId, input.name);
+        },
+        { once: false }
       );
     });
 
