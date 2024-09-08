@@ -170,7 +170,8 @@ window.Webflow.push(() => {
             // It's a downloadable file
             let link = document.createElement('a');
             link.href = window.downloadUrl;
-            link.download = window.downloadName || 'stotles file';
+            link.download = window.downloadName;
+            link.target = '_blank';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
