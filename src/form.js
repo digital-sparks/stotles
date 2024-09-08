@@ -158,31 +158,28 @@ window.Webflow.push(() => {
           document.querySelector('.rich-text-wrap').style.maxHeight = 'none';
         }
 
-          // Open PDF if present
+       // List of file extensions to download
+        const downloadExtensions = ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.zip', '.rar'];
+
+        // Open file if present
         if (window.downloadUrl) {
-          fetch(window.downloadUrl, { method: 'HEAD' })
-            .then(response => {
-              const contentType = response.headers.get('Content-Type');
-              
-              if (contentType && contentType.includes('application/pdf')) {
-                // It's a PDF, download it
-                let link = document.createElement('a');
-                link.href = window.downloadUrl;
-                link.download = window.downloadName;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-              } else {
-                // It's not a PDF, open in new tab
-                window.open(window.downloadUrl, '_blank');
-              }
-            })
-            .catch(error => {
-              console.error('Error checking content type:', error);
-              // Fallback: open in new tab if there's an error
-              window.open(window.downloadUrl, '_blank');
-            });
+          const url = window.downloadUrl.toLowerCase();
+          const isDownloadable = downloadExtensions.some(ext => url.endsWith(ext));
+
+          if (isDownloadable) {
+            // It's a downloadable file
+            let link = document.createElement('a');
+            link.href = window.downloadUrl;
+            link.download = window.downloadName || 'stotles file';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          } else {
+            // It's not a downloadable file, open in new tab
+            window.open(window.downloadUrl, '_blank');
+          }
         }
+
 
         return true;
       },
