@@ -158,15 +158,30 @@ window.Webflow.push(() => {
           document.querySelector('.rich-text-wrap').style.maxHeight = 'none';
         }
 
-        // Open PDF if present
+          // Open PDF if present
         if (window.downloadUrl) {
-          let link = document.createElement('a');
-          link.href = window.downloadUrl;
-          link.download = window.downloadName;
-          link.target = '_blank';
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
+          fetch(window.downloadUrl, { method: 'HEAD' })
+            .then(response => {
+              const contentType = response.headers.get('Content-Type');
+              
+              if (contentType && contentType.includes('application/pdf')) {
+                // It's a PDF, download it
+                let link = document.createElement('a');
+                link.href = window.downloadUrl;
+                link.download = window.downloadName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+              } else {
+                // It's not a PDF, open in new tab
+                window.open(window.downloadUrl, '_blank');
+              }
+            })
+            .catch(error => {
+              console.error('Error checking content type:', error);
+              // Fallback: open in new tab if there's an error
+              window.open(window.downloadUrl, '_blank');
+            });
         }
 
         return true;
