@@ -13,6 +13,8 @@ const ENTRY_POINTS = [
   'src/viral.js',
   'src/form.js',
   'src/product-services.js',
+  'src/geo.js',
+  'src/hubspot.css',
 ];
 
 // Config dev serving

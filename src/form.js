@@ -1,15 +1,11 @@
 window.Webflow ||= [];
 window.Webflow.push(() => {
-  const leadIdKey = 'lead_id';
-  // Check if lead_id exists in localStorage
-  let leadId = localStorage.getItem(leadIdKey);
+  window.dataLayer = window.dataLayer || [];
 
-  if (!leadId) {
-    // Generate a new GUID
-    leadId = generateGUID();
-    // Save the lead_id to localStorage
-    localStorage.setItem(leadIdKey, leadId);
-  }
+  // Check if lead_id exists in localStorage
+  const leadIdKey = 'lead_id';
+  let leadId = localStorage.getItem(leadIdKey) || generateGUID();
+  localStorage.setItem(leadIdKey, leadId);
 
   // Function to generate a GUID
   function generateGUID() {
@@ -20,8 +16,7 @@ window.Webflow.push(() => {
     });
   }
 
-  window.dataLayer = window.dataLayer || [];
-
+  // Function to return clean url
   function getUrlWithoutQueryParams() {
     const url = new URL(window.location.href);
     return `${url.origin}${url.pathname}${url.hash}`;
@@ -48,22 +43,66 @@ window.Webflow.push(() => {
     });
   }
 
-  $.validator.addMethod('regex', function (value, element, regexp) {
-    if (regexp && regexp.constructor != RegExp) {
-      regexp = new RegExp(regexp);
-    } else if (regexp.global) regexp.lastIndex = 0;
-    return this.optional(element) || regexp.test(value);
-  });
+  function sendFormSubmittedEvent(formEvent, formName, formId) {
+    window.dataLayer.push({
+      event: `${formEvent}_submitted`,
+      form_name: formName,
+      form_id: formId,
+      form_url: getUrlWithoutQueryParams(),
+      lead_id: leadId,
+    });
+  }
 
-  $.validator.setDefaults({
-    ignore: [],
-  });
+  function handleFormVisibility() {
+    // Hide popup form if present
+    if (document.querySelector('#report-popup-form')) {
+      document.querySelector('#report-popup-form').style.display = 'none';
+      const pagePath = new URL(document.URL).pathname + '-popup';
+      window.localStorage.setItem(pagePath, 'true');
+    }
 
-  document.querySelectorAll('form').forEach((form, i) => {
-    const formId = form.getAttribute('id'),
-      formName = form.getAttribute('data-name'),
-      formEvent = form.getAttribute('data-track-name');
+    // Hide report page overlay
+    if (document.querySelector('#gated-form')) {
+      const gatedForm = document.querySelector('#gated-form');
+      const gatedFormSection = gatedForm.closest('.sign-up_component');
+      gatedFormSection.style.display = 'none';
+      const pagePath = new URL(document.URL).pathname + '-popup';
+      window.localStorage.setItem(pagePath, 'true');
+      document.querySelector('.rich-text-wrap').style.maxHeight = 'none';
+    }
+  }
 
+  function handleFileDownload() {
+    if (window.downloadUrl) {
+      const url = window.downloadUrl.toLowerCase();
+      const downloadExtensions = [
+        '.pdf',
+        '.doc',
+        '.docx',
+        '.xls',
+        '.xlsx',
+        '.ppt',
+        '.pptx',
+        '.zip',
+        '.rar',
+      ];
+      const isDownloadable = downloadExtensions.some((ext) => url.endsWith(ext));
+
+      if (isDownloadable) {
+        let link = document.createElement('a');
+        link.href = window.downloadUrl;
+        link.download = window.downloadName;
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        window.open(window.downloadUrl, '_blank');
+      }
+    }
+  }
+
+  function setupFormTracking(form, formEvent, formName, formId) {
     // Track form start interaction
     let formStarted = false;
     form.addEventListener(
@@ -97,91 +136,61 @@ window.Webflow.push(() => {
         { once: false }
       );
     });
+  }
 
+  function getStotlesCookieData() {
+    const raw_cookie = Cookies.get('stotles_utm');
+    // console.log(JSON.parse(raw_cookie));
+    return raw_cookie ? JSON.parse(raw_cookie) : undefined;
+  }
+
+  function handleFormSubmit(form, formEvent, formName, formId, isHubSpotForm = false) {
+    const stotles_cookie = getStotlesCookieData();
+
+    if (stotles_cookie && !isHubSpotForm) {
+      const firstPage = stotles_cookie.url ? `<${stotles_cookie.url}|Link>` : 'Unknown';
+      const utmParams = stotles_cookie.utmParams || {};
+
+      form.querySelector('input[name=referrer]').value = stotles_cookie.referrer || 'Unknown';
+      form.querySelector('input[name=first_stotles_page]').value = firstPage;
+      form.querySelector('input[name=utm_params]').value = Object.entries(utmParams)
+        .map(([k, v]) => `${k}: ${v}`)
+        .join(', ');
+      form.querySelector('input[name=utm_source]').value = utmParams['source'];
+      form.querySelector('input[name=utm_medium]').value = utmParams['medium'];
+      form.querySelector('input[name=utm_campaign]').value = utmParams['campaign'];
+      form.querySelector('input[name=utm_content]').value = utmParams['content'];
+      form.querySelector('input[name=utm_term]').value = utmParams['term'];
+    }
+
+    sendFormSubmittedEvent(formEvent, formName, formId);
+    handleFormVisibility();
+    handleFileDownload();
+  }
+
+  $.validator.addMethod('regex', function (value, element, regexp) {
+    if (regexp && regexp.constructor != RegExp) {
+      regexp = new RegExp(regexp);
+    } else if (regexp.global) regexp.lastIndex = 0;
+    return this.optional(element) || regexp.test(value);
+  });
+
+  $.validator.setDefaults({
+    ignore: [],
+  });
+
+  // Setup for standard Webflow forms
+  document.querySelectorAll('form:not(.hs-form)').forEach((form) => {
+    const formId = form.getAttribute('id');
+    const formName = form.getAttribute('data-name');
+    const formEvent = form.getAttribute('data-track-name');
+
+    setupFormTracking(form, formEvent, formName, formId);
+
+    // jQuery validation setup
     $(form).validate({
       submitHandler: function (form) {
-        const raw_cookie = Cookies.get('stotles_utm');
-        const stotles_cookie = raw_cookie ? JSON.parse(raw_cookie) : undefined;
-        if (stotles_cookie) {
-          const firstPage = stotles_cookie.url ? `<${stotles_cookie.url}|Link>` : 'Unknown';
-          form.querySelector('input[name=referrer]').value = stotles_cookie.referrer
-            ? stotles_cookie.referrer
-            : 'Unknown';
-          form.querySelector('input[name=first_stotles_page]').value = firstPage;
-          form.querySelector('input[name=utm_params]').value = stotles_cookie.utmParams
-            ? Object.entries(stotles_cookie.utmParams)
-                .map(([k, v]) => `${k}: ${v}`)
-                .join(', ')
-            : 'Unknown';
-          form.querySelector('input[name=utm_source]').value = stotles_cookie.utmParams
-            ? stotles_cookie.utmParams['source']
-            : undefined;
-          form.querySelector('input[name=utm_medium]').value = stotles_cookie.utmParams
-            ? stotles_cookie.utmParams['medium']
-            : undefined;
-          form.querySelector('input[name=utm_campaign]').value = stotles_cookie.utmParams
-            ? stotles_cookie.utmParams['campaign']
-            : undefined;
-          form.querySelector('input[name=utm_content]').value = stotles_cookie.utmParams
-            ? stotles_cookie.utmParams['content']
-            : undefined;
-          form.querySelector('input[name=utm_term]').value = stotles_cookie.utmParams
-            ? stotles_cookie.utmParams['term']
-            : 'undefined';
-        }
-
-        // form is submitted successfully
-        window.dataLayer.push({
-          event: `${formEvent}_submitted`,
-          form_name: formName,
-          form_id: formId,
-          form_url: getUrlWithoutQueryParams(),
-          lead_id: leadId,
-        });
-
-        // Hide popup form if present
-        if (document.querySelector('#report-popup-form')) {
-          form.querySelector('input[name=campaign_description]').value = document.title;
-          document.querySelector('#report-popup-form').style.display = 'none';
-          const pagePath = new URL(document.URL).pathname + '-popup';
-          window.localStorage.setItem(pagePath, 'true');
-        }
-
-        // hide report page overlay
-        if (document.querySelector('#gated-form')) {
-          form.querySelector('input[name=campaign_description]').value = document.title;
-          const gatedForm = document.querySelector('#gated-form');
-          const gatedFormSection = gatedForm.closest('.sign-up_component');
-          gatedFormSection.style.display = 'none';
-          const pagePath = new URL(document.URL).pathname + '-popup';
-          window.localStorage.setItem(pagePath, 'true');
-          document.querySelector('.rich-text-wrap').style.maxHeight = 'none';
-        }
-
-       // List of file extensions to download
-        const downloadExtensions = ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.zip', '.rar'];
-
-        // Open file if present
-        if (window.downloadUrl) {
-          const url = window.downloadUrl.toLowerCase();
-          const isDownloadable = downloadExtensions.some(ext => url.endsWith(ext));
-
-          if (isDownloadable) {
-            // It's a downloadable file
-            let link = document.createElement('a');
-            link.href = window.downloadUrl;
-            link.download = window.downloadName;
-            link.target = '_blank';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-          } else {
-            // It's not a downloadable file, open in new tab
-            window.open(window.downloadUrl, '_blank');
-          }
-        }
-
-
+        handleFormSubmit(form, formEvent, formName, formId);
         return true;
       },
       errorClass: 'is-error',
@@ -224,7 +233,6 @@ window.Webflow.push(() => {
       rules: {
         email: {
           email: true,
-          // regex: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
         },
       },
       messages: {
@@ -243,6 +251,104 @@ window.Webflow.push(() => {
         // contracts: '',
         // buyer_qai_pass: ''
       },
+    });
+  });
+
+  (window.hsFormsOnReady = window.hsFormsOnReady || []).push(() => {
+    console.log('hubspot forms ready to load');
+
+    document.querySelectorAll('[hubspot-form-id][color-mode]').forEach((form, i) => {
+      const formId = form.getAttribute('hubspot-form-id'),
+        colorMode = form.getAttribute('color-mode') || 'light',
+        formEvent = form.getAttribute('hubspot-form-track-name');
+
+      console.log(formId, colorMode, formEvent);
+      console.log(form.parentElement);
+
+      if (!formId) return; // if no form ID is present, break the iteration.
+
+      form.setAttribute('hubspot-form-index', i);
+
+      hbspt.forms.create({
+        region: 'na1',
+        portalId: '5746318',
+        formId: formId,
+        css: '',
+        cssRequired: '',
+        target: `[hubspot-form-id][hubspot-form-index="${i}"]`,
+        cssClass: colorMode === 'dark' ? 'is-dark' : '',
+        submitButtonClass: `button width-full ${colorMode === 'dark' ? 'is-white' : ''}`,
+        onFormReady: (hubspotForm) => {
+          setupFormTracking(hubspotForm[0], formEvent, formEvent, formId);
+
+          document
+            .querySelectorAll(`[hubspot-form-id="${formId}"][hubspot-submit-action="show"]`)
+            .forEach((el) => {
+              el.style.display = 'none';
+            });
+
+          const stotles_cookie = getStotlesCookieData();
+
+          if (stotles_cookie) {
+            const firstPage = stotles_cookie.url ? `<${stotles_cookie.url}|Link>` : 'Unknown';
+            const utmParams = stotles_cookie.utmParams || {};
+
+            const referrerInput = hubspotForm[0].querySelector('input[name=stotles_referrer_url]');
+            if (referrerInput) {
+              referrerInput.value = stotles_cookie.referrer || 'Unknown';
+            }
+
+            const firstVisitInput = hubspotForm[0].querySelector('input[name=stotles_first_visit]');
+            if (firstVisitInput) {
+              firstVisitInput.value = firstPage || '';
+            }
+
+            const utmSourceInput = hubspotForm[0].querySelector('input[name=stotles_utm_source]');
+            if (utmSourceInput) {
+              utmSourceInput.value = utmParams['source'] || '';
+            }
+
+            const utmMediumInput = hubspotForm[0].querySelector('input[name=stotles_utm_medium]');
+            if (utmMediumInput) {
+              utmMediumInput.value = utmParams['medium'] || '';
+            }
+
+            const utmCampaignInput = hubspotForm[0].querySelector(
+              'input[name=stotles_utm_campaign]'
+            );
+            if (utmCampaignInput) {
+              utmCampaignInput.value = utmParams['campaign'] || '';
+            }
+
+            const utmContentInput = hubspotForm[0].querySelector('input[name=stotles_utm_content]');
+            if (utmContentInput) {
+              utmContentInput.value = utmParams['content'] || '';
+            }
+
+            const utmTermInput = hubspotForm[0].querySelector('input[name=stotles_utm_term]');
+            if (utmTermInput) {
+              utmTermInput.value = utmParams['term'] || '';
+            }
+          }
+        },
+        onFormSubmitted: (hubspotForm) => {
+          handleFormSubmit(hubspotForm[0], formEvent, formId, formId, true);
+
+          hubspotForm[0].style.display = 'none';
+
+          document
+            .querySelectorAll(`[hubspot-form-id="${formId}"][hubspot-submit-action="hide"]`)
+            .forEach((el) => {
+              el.style.display = 'none';
+            });
+
+          document
+            .querySelectorAll(`[hubspot-form-id="${formId}"][hubspot-submit-action="show"]`)
+            .forEach((el) => {
+              el.style.display = 'block';
+            });
+        },
+      });
     });
   });
 });

@@ -1,9 +1,16 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 dependencies:
   gsap:
     specifier: ^3.12.5
     version: 3.12.5
+  node-ipinfo:
+    specifier: ^3.5.3
+    version: 3.5.3
   swiper:
     specifier: ^11.0.7
     version: 11.0.7
@@ -1957,6 +1964,11 @@ packages:
       yallist: 4.0.0
     dev: true
 
+  /lru-cache@7.18.3:
+    resolution: {integrity: sha512-jumlc0BIUrS3qJGgIkWZsyfAM7NCWiBcCDhnd+3NNM5KbBmLTgHVfWBcg6W+rLUsIpzpERPsvwUP7CckAQSOoA==}
+    engines: {node: '>=12'}
+    dev: false
+
   /map-obj@1.0.1:
     resolution: {integrity: sha512-7N/q3lyZ+LVCp7PzuxrJr4KMbBE2hW7BT7YNia330OFxIf4d3r5zVpicP2650l7CPN6RM9zOJRl3NGpqSiw3Eg==}
     engines: {node: '>=0.10.0'}
@@ -2043,6 +2055,14 @@ packages:
   /natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
     dev: true
+
+  /node-ipinfo@3.5.3:
+    resolution: {integrity: sha512-hV63BykbaryksxKgh308L35DeB54EhDZ4bHFpH+xbWzPGiwct50lnO/Ky/XtMD8eh2to/IXIw+S17OfdfShtJQ==}
+    engines: {node: '>=10'}
+    dependencies:
+      lru-cache: 7.18.3
+      subnet-check: 1.10.1
+    dev: false
 
   /normalize-package-data@2.5.0:
     resolution: {integrity: sha512-/5CMN3T0R4XTj4DcGaexo+roZSdSFW/0AOOTROrjxzCG1wrWXEsGbRKevjlIL+ZDE4sZlJr5ED4YW0yqmkK+eA==}
@@ -2622,6 +2642,11 @@ packages:
     resolution: {integrity: sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==}
     engines: {node: '>=8'}
     dev: true
+
+  /subnet-check@1.10.1:
+    resolution: {integrity: sha512-e8lXZ9ICcG42fFsMDZO5TTZ3uS2436b5hnx3uS4Z3XkAFuDLa5R3Pvt9lYhewKm/vCd48t14v0jFaSmVYOT2Kg==}
+    engines: {node: '>=4.0.0'}
+    dev: false
 
   /supports-color@5.5.0:
     resolution: {integrity: sha512-QjVjwdXIt408MIiAqCX4oUKsgU2EqAGzs2Ppkm4aQYbjm+ZEWEcW4SfFNTr4uMNZma0ey4f5lgLrkB0aX0QMow==}

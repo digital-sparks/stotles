@@ -1,0 +1,200 @@
+/* All paragraph elements inside Hubspot form */
+.hs-form > p {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.hs-form-required {
+  display: none !important;
+}
+
+/* Set margin right 0 for input wrapper */
+.hs-input {
+  width: 100% !important;
+  min-height: 2.625rem !important;
+  padding: 0.625rem 0.75rem !important;
+}
+
+/* Max width of fieldset element inside form */
+.hs-form > fieldset {
+  max-width: 100% !important;
+}
+
+.hs_error_rollup {
+  display: none !important;
+}
+
+/* Radio Inputs */
+.hs-input[type='radio'] {
+  width: auto !important;
+  margin-right: 0.5rem;
+  min-height: auto !important;
+}
+
+/* Checkbox Labels */
+.hs-form-checkbox > label,
+.hs-form-field label {
+  font-weight: 500 !important;
+}
+
+.hs-form-field div.input {
+  margin-right: 0 !important;
+}
+
+/* Error messages label margin */
+.hs-error-msgs > label {
+  margin-bottom: 0px !important;
+}
+
+.legal-consent-container .hs-error-msgs label {
+  color: var(--text-color--text-error) !important;
+}
+
+.legal-consent-container {
+  margin-bottom: 2rem;
+}
+
+/*Custom Checkbox*/
+.hs-input[type='checkbox'] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  flex-shrink: 0;
+  position: relative;
+  width: 1rem !important;
+  height: 1rem !important;
+  padding: 0 !important;
+  margin-top: 0.125rem !important;
+  margin-right: 0.5rem !important;
+  min-height: auto !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 0.125rem !important;
+  accent-color: var(--border-color) !important;
+  transition:
+    background-color 100ms ease,
+    border-color 100ms ease;
+}
+
+.hs-input[type='checkbox']:pressed {
+  border-color: var(--border-color) !important;
+  accent-color: var(--border-color) !important;
+  box-shadow: none;
+}
+
+.hs-input[type='checkbox']:focus {
+  border-color: var(--border-color) !important;
+  accent-color: var(--border-color) !important;
+}
+
+.hs-input[type='checkbox']:hover {
+  border-color: var(--button-hover--secondary-border) !important;
+  accent-color: var(--button-hover--secondary-border) !important;
+  cursor: pointer !important;
+}
+
+.hs-input[type='checkbox']:checked {
+  border-color: var(--button-default--primary-bg) !important;
+  accent-color: var(--button-default--primary-bg) !important;
+  background-color: var(--button-default--primary-bg) !important;
+}
+
+.hs-input[type='checkbox']:checked::after {
+  content: '';
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  background-image: url('data:image/svg+xml,<svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.84166 10.6635L2.99862 7.82045L1.77783 9.04124L5.84166 13.1051L14.2223 4.72445L13.0015 3.50366L5.84166 10.6635Z" fill="white"/></svg>');
+  background-position: 50% 50%;
+  background-size: 85%;
+  background-repeat: no-repeat;
+}
+
+.hs-form-booleancheckbox-display > span {
+  margin-left: 0 !important;
+}
+
+.hs-form-booleancheckbox-display p,
+.hs-form .hs-richtext {
+  color: var(--text-color--text-secondary) !important;
+  font-size: 0.875rem !important;
+  font-weight: 400;
+}
+
+.hs-form-booleancheckbox-display a {
+  color: var(--link-color--link-secondary) !important;
+  text-decoration: underline;
+  transition: color 150ms ease;
+}
+
+.hs-form select {
+  appearance: none;
+  background-image: url('data:image/svg+xml,<svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1.5L6 6.5L11 1.5" stroke="%232D3B54" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+  background-position: calc(100% - 0.75rem) 50%;
+  background-size: 0.875rem;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+}
+
+.hs-form.is-dark select {
+  appearance: none;
+  background-image: url('data:image/svg+xml,<svg width="13" height="8" viewBox="0 0 13 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.5 1.5L6.5 6.5L11.5 1.5" stroke="white" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+  background-position: calc(100% - 0.75rem) 50%;
+  background-size: 0.875rem;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+}
+
+.hs-form.is-dark .hs-input,
+.hs-form.is-dark label,
+.hs-form.is-dark .hs-input::placeholder {
+  color: var(--white) !important;
+}
+
+.hs-form.is-dark .hs-input:hover,
+.hs-form.is-dark .hs-input:focus {
+  border-color: var(--button-hover--secondary-bg) !important;
+}
+
+.hs-form.is-dark .hs-error-msg {
+  color: var(--base-color-red--red-100) !important;
+}
+
+.hs-form.is-dark .hs-input[type='checkbox'] {
+  border: 1px solid var(--border-color) !important;
+  accent-color: var(--border-color) !important;
+}
+
+.hs-form.is-dark .hs-input[type='checkbox']:pressed {
+  border-color: var(--border-color) !important;
+  accent-color: var(--border-color) !important;
+}
+
+.hs-form.is-dark .hs-input[type='checkbox']:focus {
+  border-color: var(--border-color) !important;
+  accent-color: var(--border-color) !important;
+}
+
+.hs-form.is-dark .hs-input[type='checkbox']:hover {
+  border-color: var(--white) !important;
+  accent-color: var(--white) !important;
+}
+
+.hs-form.is-dark .hs-input[type='checkbox']:checked {
+  border-color: var(--white) !important;
+  accent-color: var(--white) !important;
+  background-color: var(--white) !important;
+}
+
+.hs-form.is-dark .hs-input[type='checkbox']:checked::after {
+  background-image: url('data:image/svg+xml,<svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.84166 10.6635L2.99862 7.82045L1.77783 9.04124L5.84166 13.1051L14.2223 4.72445L13.0015 3.50366L5.84166 10.6635Z" fill="blue"/></svg>');
+  background-position: 50% 50%;
+  background-size: 85%;
+  background-repeat: no-repeat;
+}
+
+.hs-form.is-dark .hs-form-booleancheckbox-display p {
+  color: var(--white) !important;
+  font-size: 0.875rem;
+}

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../bin/live-reload.js", "../src/geo.js"],
+  "sourcesContent": ["new EventSource(`${SERVE_ORIGIN}/esbuild`).addEventListener('change', () => location.reload());\n", "var requestOptions = {\n    method: 'GET',\n  };\n  \n  fetch(\"https://api.geoapify.com/v1/ipinfo?&apiKey=dbc22e2362954d0aabc6a18dc1c687b1\", requestOptions)\n    .then(response => response.json())\n    .then(result => console.log(result))\n    .catch(error => console.log('error', error));"],
+  "mappings": ";;AAAA,MAAI,YAAY,GAAG,uBAAY,UAAU,EAAE,iBAAiB,UAAU,MAAM,SAAS,OAAO,CAAC;;;ACA7F,MAAI,iBAAiB;AAAA,IACjB,QAAQ;AAAA,EACV;AAEA,QAAM,+EAA+E,cAAc,EAChG,KAAK,cAAY,SAAS,KAAK,CAAC,EAChC,KAAK,YAAU,QAAQ,IAAI,MAAM,CAAC,EAClC,MAAM,WAAS,QAAQ,IAAI,SAAS,KAAK,CAAC;",
+  "names": []
+}
