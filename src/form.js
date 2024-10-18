@@ -287,6 +287,13 @@ window.Webflow.push(() => {
               el.style.display = 'none';
             });
 
+          const campaignDescriptionInput = hubspotForm[0].querySelector(
+            'input[name=campaign_description]'
+          );
+          if (campaignDescriptionInput) {
+            campaignDescriptionInput.value = window.campaignDescription;
+          }
+
           const stotles_cookie = getStotlesCookieData();
 
           if (stotles_cookie) {
